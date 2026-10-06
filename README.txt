@@ -12,3 +12,5 @@ Open the deployed HTTPS site to use the app and install it to the home screen.
 Saved projects stay in the browser and site where they were created. A new site address does not automatically inherit those saves. Use downloaded .sgmockup backups and Open saved file to move them. Templates save layout without artwork; projects save artwork and collage images.
 
 Validation: all packaged asset references checked, source feature checks passed, JavaScript syntax checked. Existing app functionality was previously checked using simulated DOM/canvas tests; this package has not been fully tested in a real phone/desktop browser.
+
+Preview update: all six Black garment previews load automatically after workspace initialization, with one retry on image failure. Other colors load when selected.

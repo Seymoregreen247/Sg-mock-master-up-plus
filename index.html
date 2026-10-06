@@ -42,6 +42,12 @@ canvas{width:100%;height:100%;display:block;touch-action:pan-y}
 <link rel="icon" type="image/png" href="./assets/1cf22ccd2fa8a527ff87.png">
 <link rel="shortcut icon" type="image/png" href="./assets/1cf22ccd2fa8a527ff87.png">
 <link rel="apple-touch-icon" href="./assets/1cf22ccd2fa8a527ff87.png">
+<link rel="preload" as="image" href="./assets/1bfe10a682266b78cf08.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/5cc2a0ab1a43b3cd3c3b.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/cc0e9e837eb315b63abf.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/c5f99df0a1b5d4514eaf.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/42cbf144e641fbf0d0f4.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/c74b5257288b485f1aa7.jpg" fetchpriority="high">
 </head>
 <body>
 <header><img src="./assets/1cf22ccd2fa8a527ff87.png" alt="Mockup Maker Kung Fu" style="width:58px;height:58px;border-radius:12px;object-fit:cover;margin-right:12px"><h1><span class="tag">SG</span> Mockup Master V27 Colors</h1><div>Upload → Position → Download</div></header>
@@ -150,7 +156,7 @@ for(const [name,g] of Object.entries(garments)){
  </div>
  <div class="status" id="status-${name}">Unlocked — tap artwork to edit; swipe outside artwork to scroll.</div>`;
  grid.appendChild(card);
- loadGarment(name,"Black");
+ // Default garments are loaded after all workspace controls are initialized.
  const c=card.querySelector("canvas");
  attachTouch(c,name);
 }
@@ -584,6 +590,14 @@ document.getElementById('projectFile').onchange=async e=>{const file=e.target.fi
 document.getElementById('openLocal').onclick=async()=>{const id=document.getElementById('savedProjects').value;if(!id){projectStatus('Choose a saved project or template first.');return}try{const row=await projectDbAction('readonly',s=>s.get(id));if(!row)throw Error('That saved item is no longer available.');await restoreProject(row,id)}catch(err){projectStatus('Could not open: '+err.message)}};
 document.getElementById('deleteLocal').onclick=async()=>{const id=document.getElementById('savedProjects').value;if(!id)return;if(!confirm('Delete this saved browser copy? Your downloaded backup file will remain.'))return;try{await projectDbAction('readwrite',s=>s.delete(id));if(savedEntryId===id){savedEntryId=null;savedEntryKind=null;savedEntryName=null}await refreshSavedProjects();projectStatus('Saved browser copy deleted.')}catch(err){projectStatus('Could not delete: '+err.message)}};
 refreshSavedProjects();
+
+// Start every garment preview automatically; no color selection is required.
+Promise.all(Object.keys(garments).map(async name=>{
+ document.getElementById("status-"+name).textContent="Loading garment…";
+ let loaded=await loadGarment(name,"Black");
+ if(!loaded)loaded=await loadGarment(name,"Black");
+ if(loaded)document.getElementById("status-"+name).textContent="Ready — upload your logo to begin.";
+})).then(()=>redraw());
 
 </script>
 <script>
