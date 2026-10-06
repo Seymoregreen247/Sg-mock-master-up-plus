@@ -16,6 +16,6 @@ Still in from V30
 - All photos built into index.html, so shirts load from the Netlify link or the file itself.
 
 Deploy (GitHub -> Netlify)
-Upload to the repo root: index.html, manifest.webmanifest, sw.js, README.txt, and the assets folder (3 icons).
+Upload these 7 files to the repo root (no folders): index.html, manifest.webmanifest, sw.js, README.txt, icon-180.png, icon-192.png, icon-512.png.
 Netlify: build command empty, publish directory "."
 After deploying, open the site and refresh once so the new version replaces the cached one.
