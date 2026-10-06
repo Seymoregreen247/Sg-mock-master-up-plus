@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SG Mockup Master V27 — Garment Colors</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#171a18;--line:#303631;--text:#f6f7f6;--muted:#aeb6b0;--green:#39d16f}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+h1{font-size:20px;margin:0}.tag{color:var(--green);font-weight:700}
+main{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 62px)}
+aside{padding:18px;border-right:1px solid var(--line);background:var(--panel)}
+label{display:block;margin:14px 0 6px;color:var(--muted);font-size:13px}
+input[type=text]{width:100%;padding:11px;border-radius:8px;border:1px solid var(--line);background:#101310;color:white}
+details{margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:12px}summary{cursor:pointer;font-weight:700}.saveRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.saveRow button{margin-top:8px}.projectStatus{font-size:12px;color:var(--green);line-height:1.5;margin-top:8px}.panelChoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.panelChoices label{color:#333}.panelChoices select{background:white;color:#111}
+input[type=file],select,button{width:100%;padding:11px;border-radius:8px;border:1px solid var(--line);background:#101310;color:white}
+input[type=range]{width:100%} button{cursor:pointer;font-weight:700;margin-top:10px}
+button.primary{background:var(--green);color:#07120b;border:0}
+button:disabled{opacity:.45;cursor:not-allowed}
+small{color:var(--muted);line-height:1.4;display:block;margin-top:12px}
+.stage{padding:18px;overflow:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--cardMin,280px),1fr));gap:16px}
+.card{background:#fff;border-radius:12px;overflow:hidden;color:#111;box-shadow:0 4px 20px #0004}
+.card h3{margin:0;padding:10px 12px;background:#eef1ef;font-size:14px;text-transform:capitalize}
+.colorControls{padding:0 12px 12px;background:#eef1ef}.colorControls label{color:#333}.colorControls select,.colorControls input{background:white;color:#111;border-color:#bbb}
+.canvasWrap{position:relative;aspect-ratio:1/1;background:white}
+canvas{width:100%;height:100%;display:block;touch-action:pan-y}
+.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px}.actions button{margin:0;color:#111;background:#fff;border:1px solid #bbb}
+.actions button.locked{background:#171a18;color:#fff;border-color:#171a18}
+.status{font-size:12px;padding:0 10px 8px;color:#66706a}
+.value{float:right;color:white}
+@media(max-width:760px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="application-name" content="SG Mockup Master">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SG Mockups">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d0f0e">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./assets/1cf22ccd2fa8a527ff87.png">
+<link rel="shortcut icon" type="image/png" href="./assets/1cf22ccd2fa8a527ff87.png">
+<link rel="apple-touch-icon" href="./assets/1cf22ccd2fa8a527ff87.png">
+</head>
+<body>
+<header><img src="./assets/1cf22ccd2fa8a527ff87.png" alt="Mockup Maker Kung Fu" style="width:58px;height:58px;border-radius:12px;object-fit:cover;margin-right:12px"><h1><span class="tag">SG</span> Mockup Master V27 Colors</h1><div>Upload → Position → Download</div></header>
+<main>
+<aside>
+  <label for="projectName">Project / template name</label>
+  <input id="projectName" type="text" maxlength="80" placeholder="Customer name or Hoodie Season">
+  <div class="saveRow"><button id="saveProject">Save Project</button><button id="saveTemplate">Save Template</button></div>
+  <button id="openProject">Open saved file</button><input id="projectFile" type="file" accept=".sgmockup,.json,application/json" hidden>
+  <details><summary>My saved projects &amp; templates</summary><select id="savedProjects"><option value="">Choose a saved item</option></select><div class="saveRow"><button id="openLocal">Open</button><button id="deleteLocal">Delete</button></div><small>Saved on this browser. Save also downloads a backup file you can keep or open on another device.</small></details>
+  <div id="projectStatus" class="projectStatus" role="status" aria-live="polite">Name your work and save it to reuse later.</div>
+  <label>1. Upload artwork — PNG, JPG, or WebP</label>
+  <input id="upload" type="file" accept="image/png,image/webp,image/jpeg"><label><input id="reuseLayout" type="checkbox" style="width:auto"> Keep this layout when replacing the logo</label>
+
+<label style="margin-top:18px">Logo sizing</label>
+  <button id="useSize">Use selected logo size for all</button>
+  <label>Shared logo width <span id="sizeValue">400 px</span></label>
+  <input id="sharedWidth" type="range" min="40" max="1400" value="400" step="5">
+  <label><input id="sizeLocked" type="checkbox" style="width:auto"> Lock same size across garments</label>
+  <small>Select a logo and use its size for all, then lock it. Unlock for individual resizing. Width is measured in the 2000-pixel editing canvas; artwork proportions stay intact.</small>
+  <label style="margin-top:18px">2. Add scene background — optional</label>
+  <label>Studio &amp; promotion backgrounds</label>
+  <select id="studioBg"><option value="">Plain white</option><option value="ivory">Ivory studio</option><option value="slate">Slate studio</option><option value="sand">Warm sand</option><option value="charcoal">Charcoal studio</option><option value="blue">Cool blue</option><option value="rose">Soft rose</option><optgroup label="Realistic city &amp; scenery"><option value="urban">Urban brick &amp; lights</option><option value="mono">Black &amp; white city</option><option value="mystery">Midnight mystery</option><option value="london">London · photographic scenery</option><option value="paris">Paris · photographic scenery</option><option value="hongkong">Hong Kong · photographic scenery</option></optgroup><optgroup label="Holidays"><option value="christmas">Christmas · winter lights</option><option value="halloween">Halloween · moonlit night</option><option value="thanksgiving">Thanksgiving · autumn harvest</option></optgroup></select>
+  <input id="sceneBg" type="file" accept="image/png,image/webp,image/jpeg">
+  <button id="clearSceneBg" type="button">Clear scene background</button>
+  <label>Workspace zoom <span class="value" id="zoomVal">100%</span></label>
+  <input id="workspaceZoom" type="range" min="100" max="240" value="100" step="10">
+  <small>Zoom enlarges the editing view only. It does not change the downloaded mockup or artwork placement.</small>
+
+  <details id="advanced"><summary>Advanced options</summary>  <label><input id="hideTags" type="checkbox" checked style="width:auto"> Hide supplier neck tags</label><small>Retouches the visible neck label in standard shirt previews. Turn off to show the original garment photo.</small>  <label><input id="centerGuides" type="checkbox" checked style="width:auto"> Show center lines</label>
+  <label><input id="centerSnap" type="checkbox" checked style="width:auto"> Snap near center</label>
+  <small>Keep Centered locks horizontal alignment while allowing vertical movement. Guides never appear in downloads.</small>
+  <label style="display:flex;gap:10px;align-items:center;margin-top:18px">
+    <input id="removeBg" type="checkbox" style="width:auto">
+    Remove background
+  </label>
+  <label>Background remover mode</label>
+  <select id="bgMode">
+    <option value="edge">Auto edge color</option>
+    <option value="white">White / near-white</option>
+    <option value="black">Black / near-black</option>
+  </select>
+  <label>Background tolerance <span class="value" id="tolVal">28</span></label>
+  <input id="tolerance" type="range" min="5" max="100" value="28">
+  <label style="display:flex;gap:10px;align-items:center;margin-top:10px">
+    <input id="protectDark" type="checkbox" checked style="width:auto">
+    Protect black / dark artwork
+  </label>
+  <button id="restoreArt" type="button">Restore original artwork</button>
+
+</details>
+  <small>Choose a garment color on each card. You can also upload a custom blank photo. Use the studio gallery or upload your own scene background.</small>
+  <button id="resetAll">Reset all garments</button>
+  <button class="primary" id="downloadAll" disabled>Download all 6 PNGs</button>
+  <details><summary>Help · quick controls</summary><small>Upload a logo, choose colors, then drag it or use the corner handle to resize. Auto Center aligns it; Lock protects its position. Arrow keys nudge the selected logo; Shift makes larger steps. Guides stay out of downloads.</small><small>Use Save Project to keep artwork and the complete setup. Save Template keeps the layout for a different logo. Open saved file works across devices. After changing a garment or logo, press Build collage to refresh its pictures.</small><small>Artwork background removal is optional and stays off by default. Its controls are under Advanced. Restore original artwork reverses that removal.</small></details>
+</aside>
+<section class="stage"><div id="grid" class="grid"></div>
+<div class="card" style="margin-top:24px;padding:18px"><h2>Mockup collage</h2>
+<p>Upload 3–6 finished mockups, or use your current garments. Add a title and download your promotion.</p>
+<label>Layout <select id="collageLayout"><option value="4">Four pictures · square grid</option><option value="3">Three pictures · horizontal gallery</option><option value="5">Five pictures · centered gallery</option><option value="6">Six pictures · full gallery</option></select></label>
+<label for="collageTitle">Promotion title — optional</label><input id="collageTitle" type="text" maxlength="100" placeholder="Hoodie season · From my hood to your hood" style="width:100%;padding:12px;border:1px solid #bbb;border-radius:8px"><label for="collageSubtitle">Subtitle — optional</label><input id="collageSubtitle" type="text" maxlength="140" placeholder="Seymore Green · Your design. Your style." style="width:100%;padding:12px;border:1px solid #bbb;border-radius:8px"><label for="titleColor">Title color</label><input id="titleColor" type="color" value="#ffffff"><small style="color:#555">Titles appear on the downloaded collage. Backgrounds also apply to individual garment downloads. Scenery backgrounds are photorealistic AI images.</small><label>Choose the garment for each collage panel</label><div id="collageChoices" class="panelChoices"></div><details style="color:#222;border-color:#bbb"><summary>Upload finished pictures instead</summary><div id="collageUploads"></div></details>
+<button id="collageCurrent">Build collage from selected garments</button><button id="collageDownload">Download collage PNG</button>
+<p id="collageStatus">Choose images for each panel.</p><canvas id="collageCanvas" width="2400" height="2400" style="width:100%;height:auto"></canvas></div></section>
+</main>
+
+<script>
+const addedColors = {"crewneck":{"Black":{"img":"./assets/1bfe10a682266b78cf08.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"White":{"img":"./assets/98f63560dd9d7499e522.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Blue":{"img":"./assets/d8c0d639507f067b42b0.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Red":{"img":"./assets/375bac9939497cb5103d.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Gray":{"img":"./assets/e89294dd65d9b5fc0db7.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Green":{"img":"./assets/9905034e05ccf46a9972.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true}},"hoodie":{"Black":{"img":"./assets/5cc2a0ab1a43b3cd3c3b.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true},"White":{"img":"./assets/9a6cf266a48a6f111810.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true},"Blue":{"img":"./assets/e6e0e942a58c9c320d25.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true},"Red":{"img":"./assets/4acb16920fe082d1d575.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true},"Gray":{"img":"./assets/331a13ecc3232d1ebe8c.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true},"Green":{"img":"./assets/4ec5f8986fca3f96ebe1.jpg","box":[0.5,0.32,0.34,0.27],"preserveBackdrop":true}},"tshirt":{"Black":{"img":"./assets/cc0e9e837eb315b63abf.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"White":{"img":"./assets/8cece51f845371f5d6ba.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Blue":{"img":"./assets/df04ef73d131394bf80b.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Red":{"img":"./assets/baa64d77d56d82e7a43e.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Gray":{"img":"./assets/36bff662d3c1fda95268.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Green":{"img":"./assets/881728587b02a26c4c3c.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true}},"longsleeve":{"Black":{"img":"./assets/c5f99df0a1b5d4514eaf.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"White":{"img":"./assets/1b55ed18373d442c476e.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Blue":{"img":"./assets/239356da90a498176927.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Red":{"img":"./assets/0cad8a426002e45be59c.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Gray":{"img":"./assets/d7cf189f7c3939a8562e.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true},"Green":{"img":"./assets/aadccc2f1e0f1ca4e70d.jpg","box":[0.5,0.27,0.36,0.38],"preserveBackdrop":true}},"beanie":{"Black":{"img":"./assets/42cbf144e641fbf0d0f4.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true},"White":{"img":"./assets/2f85dd3345cc1808538d.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true},"Blue":{"img":"./assets/a4cd48d97be3320cfdcb.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true},"Red":{"img":"./assets/ebab05b64922e942b078.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true},"Gray":{"img":"./assets/93c83b0ede189b3ee34c.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true},"Green":{"img":"./assets/633b6a5259f97eafd529.jpg","box":[0.49,0.68,0.4,0.15],"preserveBackdrop":true}},"onesie":{"Black":{"img":"./assets/c74b5257288b485f1aa7.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true},"White":{"img":"./assets/9927742e04205549fa6b.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true},"Blue":{"img":"./assets/52c6eada9dff9a239990.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true},"Red":{"img":"./assets/34881ae9e7474ecfd4e0.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true},"Gray":{"img":"./assets/522d5b7765380106c611.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true},"Green":{"img":"./assets/bd19f94c2ffa77211369.jpg","box":[0.5,0.27,0.34,0.32],"preserveBackdrop":true}}};
+const garments = {
+ tshirt:{img:addedColors.tshirt.Black.img,box:[0.5, 0.27, 0.36, 0.38]},
+ crewneck:{img:addedColors.crewneck.Black.img,box:[0.5, 0.27, 0.36, 0.38]},
+ hoodie:{img:addedColors.hoodie.Black.img,box:[0.5, 0.32, 0.34, 0.27]},
+ longsleeve:{img:addedColors.longsleeve.Black.img,box:[0.5, 0.27, 0.36, 0.38]},
+ onesie:{img:addedColors.onesie.Black.img,box:[0.5, 0.27, 0.34, 0.32]},
+ beanie:{img:addedColors.beanie.Black.img,box:[0.49, 0.68, 0.4, 0.15]}
+};
+for (const [name,g] of Object.entries(garments)) { g.variants={Black:{img:g.img,box:g.box},...(addedColors[name]||{})}; g.color="Black"; }
+const exportCrop = {
+ tshirt:    [.13,.035,.87,.965],
+ crewneck:  [.10,.035,.90,.965],
+ hoodie:    [.08,.025,.92,.975],
+ longsleeve:[.06,.025,.94,.975],
+ onesie:    [.18,.025,.82,.975],
+ beanie:    [.16,.10,.84,.90]
+};
+
+let originalArt=null, art=null, sceneBackground=null, artName="design", masters={}, cutoutMasters={};
+let activeGarment=null;let artLoadToken=0;
+let sharedLogoWidth=400,sharedSizeLocked=false,exportingClean=false;
+const taglessMasters={};
+const state={};
+const grid=document.getElementById("grid");
+const garmentLoadTokens={};
+
+for(const [name,g] of Object.entries(garments)){
+ state[name]={x:null,y:null,w:null,h:null,selected:false,locked:false};
+ const card=document.createElement("div"); card.className="card";
+ card.innerHTML=`<h3>${name}</h3>
+ <div class="colorControls"><label for="color-${name}">Garment color / view</label><select id="color-${name}" data-color="${name}">${Object.keys(g.variants).map(color=>`<option>${color}</option>`).join("")}</select><details style="color:#333;border-color:#bbb;margin-top:8px"><summary>Add custom garment photo</summary><label for="blank-${name}">Choose a blank photo</label><input id="blank-${name}" data-blank="${name}" type="file" accept="image/png,image/jpeg,image/webp"></details></div>
+ <div class="canvasWrap"><canvas id="c-${name}" width="2000" height="2000" ></canvas></div>
+ <div class="actions">
+   <button data-lock="${name}">🔓 Lock</button>
+   <button data-reset="${name}">Reset</button>
+   <button data-center="${name}">Auto Center</button><button data-centerlock="${name}">Keep Centered: off</button>
+   <button data-dl="${name}">Download</button>
+   <button data-share="${name}" style="grid-column:1 / -1">Share mockup</button>
+ </div>
+ <div class="status" id="status-${name}">Unlocked — tap artwork to edit; swipe outside artwork to scroll.</div>`;
+ grid.appendChild(card);
+ loadGarment(name,"Black");
+ const c=card.querySelector("canvas");
+ attachTouch(c,name);
+}
+
+
+function loadGarment(name,color){
+ return new Promise(resolve=>{
+ const g=garments[name],variant=g.variants[color],token=(garmentLoadTokens[name]||0)+1;
+ garmentLoadTokens[name]=token;
+ const select=document.getElementById("color-"+name);select.disabled=true;
+ const old=masters[name],oldBox=g.box.slice();
+ const im=new Image();
+ im.onload=()=>{
+  if(garmentLoadTokens[name]!==token){resolve(false);return}
+  let image=im;
+  if(variant.crop){const [x,y,w,h]=variant.crop;image=document.createElement("canvas");image.width=w;image.height=h;image.getContext("2d").drawImage(im,x,y,w,h,0,0,w,h);}
+  const st=state[name];
+  if(old && st.x!==null){
+   const os=Math.min(1900/old.width,1900/old.height),ow=old.width*os,oh=old.height*os,ox=(2000-ow)/2,oy=(2000-oh)/2;
+   const ns=Math.min(1900/image.width,1900/image.height),nw=image.width*ns,nh=image.height*ns,nx=(2000-nw)/2,ny=(2000-nh)/2;
+   const ratio=(variant.box[2]*nw)/(oldBox[2]*ow);
+   st.x=nx+variant.box[0]*nw+(st.x-ox-oldBox[0]*ow)*ratio;
+   st.y=ny+variant.box[1]*nh+(st.y-oy-oldBox[1]*oh)*ratio;
+   st.w*=ratio;st.h*=ratio;
+  }
+  g.color=color;g.box=variant.box.slice();g.preserveBackdrop=!!variant.preserveBackdrop;
+  masters[name]=image;delete cutoutMasters[name];delete taglessMasters[name];select.value=color;select.disabled=false;
+  updateLockUI(name);draw(name);resolve(true);
+ };
+ im.onerror=()=>{if(garmentLoadTokens[name]!==token){resolve(false);return}select.value=g.color;select.disabled=false;document.getElementById("status-"+name).textContent="Photo could not load. Try another image.";resolve(false);};
+ im.src=variant.img;
+ });
+}
+document.addEventListener("change",e=>{
+ if(e.target.dataset.color)loadGarment(e.target.dataset.color,e.target.value);
+ if(e.target.dataset.blank){
+  const name=e.target.dataset.blank,file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();reader.onload=()=>{
+   const label="Custom — "+file.name,select=document.getElementById("color-"+name);
+   garments[name].variants[label]={img:reader.result,box:garments[name].box.slice(),preserveBackdrop:true};
+   if(!Array.from(select.options).some(o=>o.value===label)){const option=document.createElement("option");option.textContent=label;select.appendChild(option);}
+   loadGarment(name,label);
+  };reader.readAsDataURL(file);
+ }
+});
+function makeArtSource(img){
+ const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;
+ c.getContext("2d").drawImage(img,0,0);return c;
+}
+function removeEdgeBackground(source,tol){
+ const c=document.createElement("canvas");c.width=source.width;c.height=source.height;
+ const ctx=c.getContext("2d");ctx.drawImage(source,0,0);
+ const id=ctx.getImageData(0,0,c.width,c.height),p=id.data,w=c.width,h=c.height;
+ const mode=document.getElementById("bgMode")?.value||"edge";
+ const protectDark=document.getElementById("protectDark")?.checked!==false;
+ // Sample a band around the outside instead of only four corners. This is more stable
+ // with anti-aliased or slightly dirty white backgrounds.
+ const samples=[]; const step=Math.max(1,Math.floor(Math.min(w,h)/80));
+ for(let x=0;x<w;x+=step){samples.push((0*w+x)*4,((h-1)*w+x)*4)}
+ for(let y=0;y<h;y+=step){samples.push((y*w)*4,(y*w+w-1)*4)}
+ let bg;
+ if(mode==="white") bg=[255,255,255];
+ else if(mode==="black") bg=[0,0,0];
+ else {
+   const vals=[0,1,2].map(k=>samples.map(i=>p[i+k]).sort((a,b)=>a-b));
+   bg=vals.map(v=>v[Math.floor(v.length/2)]??255);
+ }
+ const dist=(i)=>Math.max(Math.abs(p[i]-bg[0]),Math.abs(p[i+1]-bg[1]),Math.abs(p[i+2]-bg[2]));
+ const isDark=(i)=>Math.max(p[i],p[i+1],p[i+2])<72;
+ // Global color-keying is intentional here: it removes enclosed cavities that a
+ // border-only flood fill cannot reach. Dark protection prevents a white/auto pass
+ // from confusing legitimate black artwork with background.
+ for(let i=0;i<p.length;i+=4){
+   if(p[i+3]===0)continue;
+   if(protectDark && mode!=="black" && isDark(i))continue;
+   if(dist(i)<=tol) p[i+3]=0;
+ }
+ ctx.putImageData(id,0,0);return c;
+}
+function rebuildArt(){
+ if(!originalArt)return;
+ art=document.getElementById("removeBg").checked ?
+   removeEdgeBackground(originalArt,+document.getElementById("tolerance").value) : originalArt;
+ redraw();
+}
+function makeGarmentCutout(img){
+ // Remove only near-white background connected to the OUTER EDGE.
+ // This preserves white garments and internal white details while removing the white box.
+ const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;
+ const ctx=c.getContext("2d",{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);
+ const id=ctx.getImageData(0,0,c.width,c.height),p=id.data,w=c.width,h=c.height;
+ const seen=new Uint8Array(w*h), q=new Int32Array(w*h);let head=0,tail=0;
+ const nearWhite=(idx)=>{const i=idx*4;return p[i]>244&&p[i+1]>244&&p[i+2]>244&&Math.max(p[i],p[i+1],p[i+2])-Math.min(p[i],p[i+1],p[i+2])<9&&p[i+3]>0};
+ const add=(idx)=>{if(idx<0||idx>=w*h||seen[idx]||!nearWhite(idx))return;seen[idx]=1;q[tail++]=idx};
+ for(let x=0;x<w;x++){add(x);add((h-1)*w+x)}
+ for(let y=0;y<h;y++){add(y*w);add(y*w+w-1)}
+ while(head<tail){const n=q[head++],x=n%w,y=(n/w)|0,i=n*4;
+   // Feather near-white edge pixels instead of a hard jagged cut.
+   const whiteness=Math.min(p[i],p[i+1],p[i+2]);p[i+3]=0;
+   if(x>0)add(n-1);if(x<w-1)add(n+1);if(y>0)add(n-w);if(y<h-1)add(n+w);
+ }
+ // Remove one matte fringe pixel along the exposed perimeter.
+ const edgeAlpha=new Uint8Array(w*h);for(let i=0;i<w*h;i++)edgeAlpha[i]=p[i*4+3];
+ for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const n=y*w+x;if(edgeAlpha[n]&&(!edgeAlpha[n-1]||!edgeAlpha[n+1]||!edgeAlpha[n-w]||!edgeAlpha[n+w]))p[n*4+3]=0}
+ // Clear tiny disconnected photo remnants outside the main garment.
+ seen.fill(0);
+ for(let start=0;start<w*h;start++){
+  if(seen[start]||p[start*4+3]===0)continue;
+  head=0;tail=0;seen[start]=1;q[tail++]=start;
+  const visit=n=>{if(n>=0&&n<w*h&&!seen[n]&&p[n*4+3]>0){seen[n]=1;q[tail++]=n}};
+  while(head<tail){const n=q[head++],x=n%w,y=(n/w)|0;if(x>0)visit(n-1);if(x<w-1)visit(n+1);if(y>0)visit(n-w);if(y<h-1)visit(n+w)}
+  if(tail<w*h*.003)for(let i=0;i<tail;i++)p[q[i]*4+3]=0;
+ }
+ ctx.putImageData(id,0,0);return c;
+}
+function initialRect(name,mw,mh,mx,my){
+ const [cx,ty,bw,bh]=garments[name].box, as=art.width/art.height;
+ let maxW=bw*mw,maxH=bh*mh;
+ 
+ let w=maxW,h=w/as;if(h>maxH){h=maxH;w=h*as}
+ return {x:mx+cx*mw-w/2,y:my+ty*mh,w,h};
+}
+function draw(name){
+ let raw=masters[name];const c=document.getElementById("c-"+name);if(!raw||!c)return;
+ if(document.getElementById("hideTags").checked && ["tshirt","longsleeve","crewneck","hoodie"].includes(name) && !/back|Custom/.test(garments[name].color)){
+  if(!taglessMasters[name])taglessMasters[name]=hideNeckTag(raw,name);raw=taglessMasters[name];
+ }
+ if(!cutoutMasters[name])cutoutMasters[name]=makeGarmentCutout(raw);
+ const m=cutoutMasters[name]||raw;
+ const ctx=c.getContext("2d");ctx.clearRect(0,0,2000,2000);ctx.fillStyle="white";ctx.fillRect(0,0,2000,2000);
+ if(sceneBackground){const bs=Math.max(2000/sceneBackground.width,2000/sceneBackground.height),bw=sceneBackground.width*bs,bh=sceneBackground.height*bs;ctx.drawImage(sceneBackground,(2000-bw)/2,(2000-bh)/2,bw,bh);}
+ const s=Math.min(1900/m.width,1900/m.height),mw=m.width*s,mh=m.height*s,mx=(2000-mw)/2,my=(2000-mh)/2;ctx.drawImage(m,mx,my,mw,mh);
+ if(!exportingClean && document.getElementById("centerGuides").checked){
+  const cx=mx+garments[name].box[0]*mw;ctx.save();ctx.strokeStyle="#00a4d6";ctx.lineWidth=3;ctx.setLineDash([14,10]);ctx.beginPath();ctx.moveTo(cx,my);ctx.lineTo(cx,my+mh);ctx.stroke();ctx.restore();
+ }
+ if(!art)return;
+ let st=state[name];if(st.x===null)Object.assign(st,initialRect(name,mw,mh,mx,my));
+ if(sharedSizeLocked && Math.abs(st.w-sharedLogoWidth)>.01)resizeLogo(name,sharedLogoWidth);
+ if(st.centerLocked)st.x=garmentCenter(name)-st.w/2;
+ ctx.drawImage(art,st.x,st.y,st.w,st.h);
+ if(st.selected && !st.locked){
+  ctx.save();ctx.strokeStyle="#20a85a";ctx.lineWidth=7;ctx.setLineDash([18,12]);ctx.strokeRect(st.x,st.y,st.w,st.h);ctx.setLineDash([]);
+  ctx.fillStyle="#20a85a";ctx.beginPath();ctx.arc(st.x+st.w,st.y+st.h,24,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+}
+function redraw(){Object.keys(garments).forEach(draw)}
+function canvasPoint(c,e){
+ const r=c.getBoundingClientRect(),t=e.touches?e.touches[0]:e;
+ return {x:(t.clientX-r.left)*c.width/r.width,y:(t.clientY-r.top)*c.height/r.height};
+}
+function attachTouch(c,name){
+ let mode=null,start=null,base=null,activePointer=false;
+ const begin=e=>{
+  if(!art||!masters[name])return;
+  const st=state[name]; if(st.locked){ mode=null; return; }
+  const p=canvasPoint(c,e),hx=st.x+st.w,hy=st.y+st.h;
+  if(!sharedSizeLocked && Math.hypot(p.x-hx,p.y-hy)<90) mode="resize";
+  else if(p.x>=st.x&&p.x<=st.x+st.w&&p.y>=st.y&&p.y<=st.y+st.h) mode="move";
+  else { mode=null; st.selected=false; draw(name); return; }
+  activePointer=true;activeGarment=name;
+  Object.keys(state).forEach(k=>state[k].selected=(k===name));
+  start=p;base={...st};draw(name);e.preventDefault();
+ };
+ const move=e=>{
+  if(!mode||!activePointer)return;
+  const p=canvasPoint(c,e),st=state[name],dx=p.x-start.x,dy=p.y-start.y;
+  if(mode==="move"){st.x=base.x+dx;st.y=base.y+dy;alignLogo(name)}
+  else{
+   const as=base.w/base.h;let nw=Math.max(80,base.w+dx),nh=nw/as;
+   if(Math.abs(dy)>Math.abs(dx)){nh=Math.max(80,base.h+dy);nw=nh*as}
+   st.w=nw;st.h=nh;alignLogo(name);
+  }
+  draw(name);e.preventDefault();
+ };
+ const end=()=>{mode=null;activePointer=false};
+ c.addEventListener("touchstart",begin,{passive:false});
+ c.addEventListener("touchmove",move,{passive:false});
+ c.addEventListener("touchend",end,{passive:true});
+ c.addEventListener("touchcancel",end,{passive:true});
+ c.addEventListener("mousedown",begin);
+ window.addEventListener("mousemove",move);
+ window.addEventListener("mouseup",end);
+}
+function hideNeckTag(img,name){
+ const c=document.createElement("canvas");c.width=img.width;c.height=img.height;const ctx=c.getContext("2d");ctx.drawImage(img,0,0);
+ const regions={tshirt:[.476,.159,.035,.037],longsleeve:[.470,.154,.040,.050],crewneck:[.481,.131,.033,.035],hoodie:[.479,.260,.036,.023]},r=regions[name];
+ const [x,y,w,h]=[r[0]*c.width,r[1]*c.height,r[2]*c.width,r[3]*c.height];
+ // Render neighboring neck fabric over the supplier label; the source photo remains available.
+ const id=ctx.getImageData(0,0,c.width,c.height),pixels=id.data,x0=Math.floor(x),x1=Math.ceil(x+w),y0=Math.floor(y),y1=Math.ceil(y+h);
+ for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++){
+  const t=(xx-x0)/(x1-x0),i=(yy*c.width+xx)*4,l=(yy*c.width+x0-2)*4,r=(yy*c.width+x1+2)*4;
+  for(let k=0;k<3;k++)pixels[i+k]=Math.round(pixels[l+k]*(1-t)+pixels[r+k]*t);
+ }
+ ctx.putImageData(id,0,0);return c;
+}
+document.getElementById("hideTags").onchange=()=>{Object.keys(cutoutMasters).forEach(k=>delete cutoutMasters[k]);redraw()};
+function garmentCenter(name){
+ const m=masters[name],scale=Math.min(1900/m.width,1900/m.height),w=m.width*scale;return (2000-w)/2+garments[name].box[0]*w;
+}
+function alignLogo(name){
+ const st=state[name],cx=garmentCenter(name);
+ if(st.centerLocked || (document.getElementById("centerSnap").checked && Math.abs(st.x+st.w/2-cx)<25))st.x=cx-st.w/2;
+}
+function resizeLogo(name,width){
+ const st=state[name];if(st.x===null || !art)return;
+ const cx=st.x+st.w/2,cy=st.y+st.h/2;st.w=width;st.h=width*art.height/art.width;st.x=cx-st.w/2;st.y=cy-st.h/2;if(st.centerLocked)st.x=garmentCenter(name)-st.w/2;
+}
+function applySharedSize(){
+ if(!art)return;Object.keys(state).forEach(name=>{if(!masters[name])return;draw(name);resizeLogo(name,sharedLogoWidth);draw(name)});
+ document.getElementById("sharedWidth").value=sharedLogoWidth;document.getElementById("sizeValue").textContent=Math.round(sharedLogoWidth)+" px";
+}
+document.getElementById("useSize").onclick=()=>{if(!art)return;if(activeGarment && state[activeGarment].w)sharedLogoWidth=state[activeGarment].w;else if(state.tshirt.w)sharedLogoWidth=state.tshirt.w;applySharedSize()};
+document.getElementById("sharedWidth").oninput=e=>{sharedLogoWidth=+e.target.value;applySharedSize()};
+document.getElementById("sizeLocked").onchange=e=>{sharedSizeLocked=e.target.checked;if(sharedSizeLocked)applySharedSize();redraw()};
+document.getElementById("centerGuides").onchange=redraw;
+function updateLockUI(name){
+ const st=state[name],cb=document.querySelector(`[data-centerlock="${name}"]`);if(cb)cb.textContent="Keep Centered: "+(st.centerLocked?"on":"off");
+ const btn=document.querySelector(`[data-lock="${name}"]`),status=document.getElementById("status-"+name);
+ if(!btn)return;
+ btn.textContent=st.locked?"🔒 Locked":"🔓 Lock";
+ btn.classList.toggle("locked",st.locked);
+ status.textContent=st.locked?"Locked — position/size protected. Swipe anywhere to scroll.":"Unlocked — tap artwork to edit; swipe outside artwork to scroll.";
+}
+document.getElementById("upload").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;const token=++artLoadToken;artName=f.name.replace(/\.[^.]+$/,"");
+ const im=new Image();im.onload=()=>{
+   if(token!==artLoadToken)return;originalArt=makeArtSource(im);art=originalArt;
+   if(document.getElementById('reuseLayout').checked){Object.keys(state).forEach(k=>{const st=state[k];st.selected=false;if(Number.isFinite(st.w)&&st.w>0)st.h=st.w*art.height/art.width})}
+   else Object.keys(state).forEach(k=>state[k]={x:null,y:null,w:null,h:null,selected:false,locked:false});
+   activeGarment=null;Object.keys(state).forEach(updateLockUI);
+   rebuildArt();document.getElementById("downloadAll").disabled=false
+ };const url=URL.createObjectURL(f);im.addEventListener("load",()=>URL.revokeObjectURL(url),{once:true});im.onerror=()=>{URL.revokeObjectURL(url);alert("Artwork could not load. Choose a valid PNG, JPG or WebP.")};im.src=url;
+};
+document.getElementById("sceneBg").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;const token=++sceneToken;const im=new Image();im.onload=()=>{if(token!==sceneToken)return;sceneBackground=im;document.getElementById("studioBg").value="";redraw();drawCollage()};const url=URL.createObjectURL(f);im.addEventListener("load",()=>URL.revokeObjectURL(url),{once:true});im.onerror=()=>{URL.revokeObjectURL(url);alert("Background could not load. Choose a valid PNG, JPG or WebP.")};im.src=url;
+};
+document.getElementById("clearSceneBg").onclick=()=>{sceneToken++;sceneBackground=null;document.getElementById("studioBg").value="";document.getElementById("sceneBg").value="";redraw();drawCollage()};
+document.getElementById("removeBg").onchange=rebuildArt;
+document.getElementById("bgMode").onchange=()=>{if(removeBg.checked)rebuildArt()};
+document.getElementById("tolerance").oninput=e=>{tolVal.textContent=e.target.value;if(removeBg.checked)rebuildArt()};
+document.getElementById("protectDark").onchange=()=>{if(removeBg.checked)rebuildArt()};
+document.getElementById("restoreArt").onclick=()=>{document.getElementById("removeBg").checked=false;art=originalArt;redraw()};
+document.getElementById("workspaceZoom").oninput=e=>{
+ const z=+e.target.value;document.getElementById("zoomVal").textContent=z+"%";
+ document.getElementById("grid").style.setProperty("--cardMin",Math.round(280*z/100)+"px");
+};
+document.getElementById("resetAll").onclick=()=>{activeGarment=null;Object.keys(state).forEach(k=>state[k]={x:null,y:null,w:null,h:null,selected:false,locked:false});Object.keys(state).forEach(updateLockUI);redraw()};
+function cleanDraw(name){
+ const was=state[name].selected;state[name].selected=false;exportingClean=true;try{draw(name)}finally{exportingClean=false;state[name].selected=was;}
+}
+function exportCanvas(name){
+ if(!masters[name])throw new Error("Garment photo is still loading. Please try again shortly.");
+ cleanDraw(name);
+ const src=document.getElementById("c-"+name),b=(sharedSizeLocked||sceneBackground)?[0,0,1,1]:(exportCrop[name]||[0,0,1,1]);
+ const sx=Math.round(b[0]*src.width),sy=Math.round(b[1]*src.height),
+       sw=Math.round((b[2]-b[0])*src.width),sh=Math.round((b[3]-b[1])*src.height);
+ const out=document.createElement("canvas");
+ // Keep Shopify-ready square output, but crop the garment view first so there is no loose slide space.
+ out.width=2000;out.height=2000;
+ const ctx=out.getContext("2d");ctx.fillStyle="white";ctx.fillRect(0,0,2000,2000);
+ const scale=Math.min((sceneBackground?2000:1960)/sw,(sceneBackground?2000:1960)/sh),dw=sw*scale,dh=sh*scale;
+ ctx.drawImage(src,sx,sy,sw,sh,(2000-dw)/2,(2000-dh)/2,dw,dh);
+ draw(name);
+ return out;
+}
+function saveCanvas(name){
+ const c=exportCanvas(name);
+ c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`${artName}-${name}-${garments[name].color.replace(/[^a-z0-9]+/gi,"-")}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),10000)},"image/png");
+}
+async function shareCanvas(name){
+ const c=exportCanvas(name);
+ const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+ const file=new File([blob],`${artName}-${name}-${garments[name].color.replace(/[^a-z0-9]+/gi,"-")}.png`,{type:"image/png"});
+ if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+  try{await navigator.share({title:`${artName} — ${name}`,text:"Seymore Green mockup",files:[file]});return}
+  catch(err){if(err && err.name==="AbortError")return}
+ }
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),10000);
+ alert("Direct sharing is not supported here. The PNG was downloaded so you can attach it to your message or social post.");
+}
+
+function autoCenter(name){
+ if(!art||!masters[name])return;
+ const m=masters[name],scale=Math.min(1900/m.width,1900/m.height),mw=m.width*scale,mh=m.height*scale,mx=(2000-mw)/2,my=(2000-mh)/2;
+ const st=state[name];if(st.x===null)Object.assign(st,initialRect(name,mw,mh,mx,my));
+ st.x=garmentCenter(name)-st.w/2;st.centerLocked=true;st.selected=true;st.locked=false;activeGarment=name;updateLockUI(name);draw(name);
+}
+document.addEventListener("keydown",e=>{
+ if(e.target.matches("input,select,textarea,button,a"))return;
+ if(!activeGarment||!art)return;const st=state[activeGarment];if(st.locked)return;
+ if(e.key==="Enter"){e.preventDefault();autoCenter(activeGarment);return}
+ const step=e.shiftKey?20:5;let moved=true;
+ if(e.key==="ArrowLeft")st.x-=step;else if(e.key==="ArrowRight")st.x+=step;else if(e.key==="ArrowUp")st.y-=step;else if(e.key==="ArrowDown")st.y+=step;else moved=false;
+ if(moved){e.preventDefault();alignLogo(activeGarment);st.selected=true;draw(activeGarment)}
+});
+
+document.addEventListener("click",e=>{
+ if(e.target.dataset.lock){
+   const name=e.target.dataset.lock,st=state[name];
+   st.locked=!st.locked;st.selected=false;updateLockUI(name);draw(name);
+ }
+ if(e.target.dataset.centerlock){const name=e.target.dataset.centerlock;state[name].centerLocked=!state[name].centerLocked;if(art && masters[name])alignLogo(name);updateLockUI(name);draw(name)}
+ if(e.target.dataset.center)autoCenter(e.target.dataset.center);
+ if(e.target.dataset.dl)saveCanvas(e.target.dataset.dl);
+ if(e.target.dataset.share)shareCanvas(e.target.dataset.share);
+ if(e.target.dataset.reset){state[e.target.dataset.reset]={x:null,y:null,w:null,h:null,selected:false,locked:false};updateLockUI(e.target.dataset.reset);draw(e.target.dataset.reset)}
+});
+document.getElementById("downloadAll").onclick=async()=>{
+ for(const name of Object.keys(garments)){
+  const c=exportCanvas(name),blob=await new Promise(r=>c.toBlob(r,"image/png"));
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${artName}-${name}-${garments[name].color.replace(/[^a-z0-9]+/gi,"-")}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),10000);draw(name);
+  await new Promise(r=>setTimeout(r,300));
+ }
+};
+
+const studioPalettes={ivory:['#fffdf6','#e5e0d6'],slate:['#e3e8ec','#7b8794'],sand:['#f5e7d3','#bba58a'],charcoal:['#60656c','#22272e'],blue:['#eff8ff','#a0b8cb'],rose:['#fff4f2','#d4b8b4']};
+const realisticBackgrounds = {"paris":"./assets/217b80d936783ccbe988.webp","london":"./assets/082c8bb561bf8b5a4bba.webp","hongkong":"./assets/407aebed2c85fdbccbf6.webp","christmas":"./assets/f9358a894f3448b56e9b.webp","urban":"./assets/f2d83b8cc653083e6cf9.webp","mono":"./assets/6c1a8158fd062016d9c5.webp","mystery":"./assets/ca75fec7389c150fc319.webp","halloween":"./assets/08373bccfed628223460.webp","thanksgiving":"./assets/d48b15edd808a5fd23b2.webp"};
+const sceneCache={};let sceneToken=0;
+function studioBackground(key){
+ const c=document.createElement('canvas');c.width=c.height=2000;const ctx=c.getContext('2d'),colors=studioPalettes[key];
+ if(!colors)return null;
+ const g=ctx.createRadialGradient(1000,600,100,1000,800,1500);g.addColorStop(0,colors[0]);g.addColorStop(1,colors[1]);ctx.fillStyle=g;ctx.fillRect(0,0,2000,2000);return c;
+}
+document.getElementById('studioBg').onchange=async e=>{
+ const key=e.target.value,token=++sceneToken;
+ if(!realisticBackgrounds[key]){sceneBackground=key?studioBackground(key):null;redraw();drawCollage();return}
+ try{let im=sceneCache[key];if(!im){im=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=realisticBackgrounds[key]});sceneCache[key]=im}
+ if(token!==sceneToken)return;sceneBackground=im;document.getElementById('sceneBg').value='';redraw();drawCollage();
+ }catch(err){if(token===sceneToken)alert('Background could not load. Please try another scene.')}
+};
+const collageImages=Array(6).fill(null),collageTokens=Array(6).fill(0);
+function drawCollage(){
+ const c=document.getElementById('collageCanvas'),count=+document.getElementById('collageLayout').value;
+ const title=document.getElementById('collageTitle').value.trim(),subtitle=document.getElementById('collageSubtitle').value.trim(),header=title||subtitle?320:0;
+ c.width=2400;c.height=(count===3?1200:2400)+header;
+ const ctx=c.getContext('2d');ctx.fillStyle='#f1f1ef';ctx.fillRect(0,0,c.width,c.height);
+ if(sceneBackground){const r=Math.max(c.width/sceneBackground.width,c.height/sceneBackground.height);ctx.drawImage(sceneBackground,(c.width-sceneBackground.width*r)/2,(c.height-sceneBackground.height*r)/2,sceneBackground.width*r,sceneBackground.height*r)}
+ if(header){ctx.fillStyle='#0d151fe8';ctx.fillRect(0,0,2400,header);ctx.textAlign='center';ctx.fillStyle=document.getElementById('titleColor').value;const fit=(text,size,y)=>{ctx.font='bold '+size+'px Arial';while(ctx.measureText(text).width>2240&&size>22){size-=2;ctx.font='bold '+size+'px Arial'}ctx.fillText(text,1200,y)};if(title)fit(title,100,subtitle?145:195);if(subtitle)fit(subtitle,48,title?245:190);ctx.textAlign='left'}
+ const cols=count===4?2:3,rows=count===3?1:2,gap=40,pw=(2400-gap*(cols+1))/cols,ph=(c.height-header-gap*(rows+1))/rows;
+ for(let i=0;i<count;i++){
+  const row=Math.floor(i/cols),rowCount=Math.min(cols,count-row*cols),offset=(2400-(rowCount*pw+(rowCount-1)*gap))/2;
+  const x=offset+(i%cols)*(pw+gap),y=header+gap+row*(ph+gap),im=collageImages[i];ctx.fillStyle='white';ctx.fillRect(x,y,pw,ph);
+  if(im){const r=Math.min((pw-32)/im.width,(ph-32)/im.height);ctx.drawImage(im,x+(pw-im.width*r)/2,y+(ph-im.height*r)/2,im.width*r,im.height*r)}else{ctx.fillStyle='#7b7b7b';ctx.font='30px Arial';ctx.fillText('Upload picture '+(i+1),x+30,y+ph/2)}
+ }
+ for(let i=0;i<6;i++){document.getElementById('collage-slot-'+i).style.display=i<count?'block':'none';const choice=document.getElementById('panel-choice-'+i);if(choice)choice.style.display=i<count?'block':'none'};
+ const ready=collageImages.slice(0,count).filter(Boolean).length;document.getElementById('collageStatus').textContent=ready===count?'Ready to download · '+count+' pictures'+(title?' · '+title:''):ready+' of '+count+' pictures ready.';
+}
+for(let i=0;i<6;i++){
+ const label=document.createElement('label');label.id='collage-slot-'+i;label.textContent='Picture '+(i+1)+' ';const input=document.createElement('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';
+ input.onchange=e=>{const f=e.target.files[0];if(!f)return;const token=++collageTokens[i],url=URL.createObjectURL(f),im=new Image();im.onload=()=>{if(token===collageTokens[i]){collageImages[i]=im;drawCollage()}URL.revokeObjectURL(url)};im.onerror=()=>{URL.revokeObjectURL(url);if(token===collageTokens[i])document.getElementById('collageStatus').textContent='Picture could not load. Choose PNG, JPG or WebP.'};im.src=url};label.appendChild(input);document.getElementById('collageUploads').appendChild(label);
+}
+const garmentLabels={tshirt:'T-shirt',longsleeve:'Long sleeve',crewneck:'Crew neck',hoodie:'Hoodie',onesie:'Onesie',beanie:'Beanie'};
+const panelDefaults=['tshirt','longsleeve','crewneck','hoodie','onesie','beanie'];
+for(let i=0;i<6;i++){const label=document.createElement('label');label.id='panel-choice-'+i;label.textContent='Panel '+(i+1);const sel=document.createElement('select');sel.id='panel-garment-'+i;for(const name of panelDefaults){const option=document.createElement('option');option.value=name;option.textContent=garmentLabels[name];sel.appendChild(option)}sel.value=panelDefaults[i];sel.onchange=()=>{document.getElementById('collageStatus').textContent='Selection changed. Press Build collage to update the pictures.'};label.appendChild(sel);document.getElementById('collageChoices').appendChild(label)}
+document.getElementById('collageLayout').onchange=drawCollage;
+for(const id of ['collageTitle','collageSubtitle','titleColor'])document.getElementById(id).oninput=drawCollage;
+document.getElementById('collageCurrent').onclick=()=>{const count=+document.getElementById('collageLayout').value,names=Array.from({length:count},(_,i)=>document.getElementById('panel-garment-'+i).value);if(!art){document.getElementById('collageStatus').textContent='Upload artwork first, then use your garment mockups.';return}if(names.slice(0,count).some(n=>!masters[n]||document.getElementById('color-'+n).disabled)){document.getElementById('collageStatus').textContent='Wait for garment photos to finish loading.';return}names.slice(0,count).forEach((n,i)=>{collageTokens[i]++;collageImages[i]=exportCanvas(n)});drawCollage()};
+document.getElementById('collageDownload').onclick=()=>{const count=+document.getElementById('collageLayout').value;if(collageImages.slice(0,count).some(im=>!im)){document.getElementById('collageStatus').textContent='Upload all '+count+' pictures before downloading.';return}drawCollage();document.getElementById('collageCanvas').toBlob(b=>{if(!b){document.getElementById('collageStatus').textContent='Download failed. Please try again.';return}const url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=(document.getElementById('collageTitle').value.trim().replace(/[^a-z0-9]+/gi,'-')||artName)+'-'+count+'-picture-collage.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000)},'image/png')};
+drawCollage();
+
+const savedControlIds=['hideTags','centerGuides','centerSnap','removeBg','bgMode','tolerance','protectDark','sharedWidth','sizeLocked','workspaceZoom','collageLayout','collageTitle','collageSubtitle','titleColor','reuseLayout'];
+let savedEntryId=null,savedEntryKind=null,savedEntryName=null,restoringProject=false;
+const projectStatus=message=>{document.getElementById('projectStatus').textContent=message};
+function projectImageData(image){return image?makeArtSource(image).toDataURL('image/png'):null}
+function snapshotProject(kind='project'){
+ const controls={};for(const id of savedControlIds){const el=document.getElementById(id);controls[id]=el.type==='checkbox'?el.checked:el.value}
+ const selectedGarments={};for(const name of Object.keys(garments)){const g=garments[name],variant=g.variants[g.color];selectedGarments[name]={color:g.color};if(!addedColors[name][g.color])selectedGarments[name].custom={img:variant.img,box:variant.box.slice(),preserveBackdrop:true}}
+ const preset=document.getElementById('studioBg').value;
+ return {format:'SG-Mockup-Master',version:1,kind,name:document.getElementById('projectName').value.trim()||(artName||'Untitled').slice(0,80),savedAt:new Date().toISOString(),artName,artwork:kind==='project'?projectImageData(originalArt):null,garments:selectedGarments,placement:JSON.parse(JSON.stringify(state)),controls,sharedLogoWidth,sharedSizeLocked,scene:{preset,custom:sceneBackground&&!preset?projectImageData(sceneBackground):null},collage:{order:Array.from({length:6},(_,i)=>document.getElementById('panel-garment-'+i).value),images:kind==='project'?collageImages.map(projectImageData):Array(6).fill(null)}};
+}
+function validateProject(p){
+ if(!p||p.format!=='SG-Mockup-Master'||p.version!==1||!['project','template'].includes(p.kind))throw Error('Choose an SG Mockup Master project or template file.');
+ if(typeof p.name!=='string'||p.name.length>80||typeof p.artName!=='string'||p.artName.length>500)throw Error('This saved file has invalid project details.');
+ const validImage=value=>value===null||(typeof value==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value));
+ if(!validImage(p.artwork)||!p.scene||!validImage(p.scene.custom)||!p.collage||!Array.isArray(p.collage.images)||p.collage.images.length!==6||!p.collage.images.every(validImage))throw Error('This saved file contains an invalid image.');
+ if(!['',...Object.keys(studioPalettes),...Object.keys(realisticBackgrounds)].includes(p.scene.preset))throw Error('This background preset is unavailable.');
+ if(!p.controls||!['3','4','5','6'].includes(String(p.controls.collageLayout))||!Array.isArray(p.collage.order)||p.collage.order.length!==6||p.collage.order.some(n=>!Object.hasOwn(garments,n)))throw Error('This saved file has invalid collage settings.');
+ if(!p.garments||!p.placement||!Number.isFinite(p.sharedLogoWidth)||p.sharedLogoWidth<1||p.sharedLogoWidth>20000||typeof p.sharedSizeLocked!=='boolean')throw Error('This saved file has invalid sizing settings.');
+ for(const name of Object.keys(garments)){
+  const g=p.garments[name],st=p.placement[name];if(!g||typeof g.color!=='string'||!st)throw Error('This file is missing garment settings.');
+  if(g.custom){if(!validImage(g.custom.img)||!g.custom.img||!Array.isArray(g.custom.box)||g.custom.box.length!==4||g.custom.box.some(v=>!Number.isFinite(v)||v<0||v>1))throw Error('A custom garment photo is invalid.');}
+  else if(!Object.hasOwn(addedColors[name],g.color))throw Error('A garment color is unavailable.');
+  for(const k of ['x','y','w','h'])if(st[k]!==null&&(!Number.isFinite(st[k])||Math.abs(st[k])>100000))throw Error('A garment placement is invalid.');
+  if(st.w!==null&&(st.w<=0||st.h<=0))throw Error('A logo size is invalid.');
+ }
+ for(const id of savedControlIds){const el=document.getElementById(id),v=p.controls[id];if(el.type==='checkbox'?typeof v!=='boolean':typeof v!=='string')throw Error('This file has invalid controls.');}
+ if(!/^#[a-f0-9]{6}$/i.test(p.controls.titleColor)||p.controls.collageTitle.length>100||p.controls.collageSubtitle.length>140)throw Error('This file has invalid title settings.');
+ return p;
+}
+async function decodeProjectImage(data){
+ if(!data)return null;
+ const im=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('One saved image could not load. Your current work was kept.'));im.src=data});
+ if(im.width*im.height>100000000)throw Error('One saved image is too large.');return im;
+}
+async function restoreProject(p,entryId=null){
+ if(restoringProject)return;
+ validateProject(p);restoringProject=true;projectStatus('Opening saved '+p.kind+'…');
+ const previousPointer=document.body.style.pointerEvents;document.body.style.pointerEvents='none';document.body.setAttribute('aria-busy','true');
+ try{
+  // Decode every supplied image before changing the current workspace.
+  const [newArt,newScene,newCollage,newCustom]=await Promise.all([decodeProjectImage(p.artwork),decodeProjectImage(p.scene.custom),Promise.all(p.collage.images.map(decodeProjectImage)),Promise.all(Object.keys(garments).map(n=>decodeProjectImage(p.garments[n].custom?.img||null)))]);
+  let presetScene=null;if(p.scene.preset){presetScene=realisticBackgrounds[p.scene.preset]?(sceneCache[p.scene.preset]||await decodeProjectImage(realisticBackgrounds[p.scene.preset])):studioBackground(p.scene.preset);if(realisticBackgrounds[p.scene.preset])sceneCache[p.scene.preset]=presetScene}
+  artLoadToken++;sceneToken++;
+  originalArt=newArt?makeArtSource(newArt):null;art=originalArt;artName=p.artName;
+  for(const id of savedControlIds){const el=document.getElementById(id);if(el.type==='checkbox')el.checked=p.controls[id];else el.value=p.controls[id]}
+  if(p.kind==='template')document.getElementById('reuseLayout').checked=true;
+  sharedLogoWidth=p.sharedLogoWidth;sharedSizeLocked=p.sharedSizeLocked;activeGarment=null;
+  sceneBackground=newScene||presetScene;document.getElementById('studioBg').value=p.scene.preset;
+  // Clear old coordinates before loading photos; restore exact saved coordinates afterward.
+  const names=Object.keys(garments);names.forEach(n=>{state[n]={x:null,y:null,w:null,h:null,selected:false,locked:false}});
+  const loaded=await Promise.all(names.map((n,i)=>{const g=p.garments[n];if(g.custom){garments[n].variants[g.color]={img:g.custom.img,box:g.custom.box.slice(),preserveBackdrop:true};const select=document.getElementById('color-'+n);if(!Array.from(select.options).some(o=>o.value===g.color)){const option=document.createElement('option');option.value=g.color;option.textContent=g.color;select.appendChild(option)}}return loadGarment(n,g.color)}));
+  if(loaded.some(ok=>!ok))throw Error('A garment could not load. Please reopen the saved file.');
+  for(const n of names){const st=p.placement[n];state[n]={x:st.x,y:st.y,w:st.w,h:st.h,locked:!!st.locked,centerLocked:!!st.centerLocked,selected:false};updateLockUI(n)}
+  for(let i=0;i<6;i++){collageTokens[i]++;collageImages[i]=newCollage[i];document.getElementById('panel-garment-'+i).value=p.collage.order[i]}
+  document.getElementById('projectName').value=p.name;document.getElementById('upload').value='';document.getElementById('sceneBg').value='';
+  document.getElementById('sizeValue').textContent=Math.round(sharedLogoWidth)+' px';document.getElementById('tolVal').textContent=p.controls.tolerance;document.getElementById('zoomVal').textContent=p.controls.workspaceZoom+'%';document.getElementById('grid').style.setProperty('--cardMin',Math.round(280*Number(p.controls.workspaceZoom)/100)+'px');
+  document.getElementById('downloadAll').disabled=!art;if(originalArt)rebuildArt();else redraw();drawCollage();
+  savedEntryId=entryId;savedEntryKind=p.kind;savedEntryName=p.name;
+  projectStatus(p.kind==='template'?'Template opened. Upload a new logo; your layout will stay in place.':'Project opened. Your artwork, placements, background and collage are restored.');
+ }finally{restoringProject=false;document.body.style.pointerEvents=previousPointer;document.body.removeAttribute('aria-busy')}
+}
+function downloadProjectFile(p){const blob=new Blob([JSON.stringify(p)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(p.name.replace(/[^a-z0-9_-]+/gi,'-')||'SG-Mockup')+'-'+p.kind+'.sgmockup';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
+let projectDbPromise=null;
+function projectDatabase(){if(!('indexedDB' in window))return Promise.reject(Error('Local storage unavailable'));if(!projectDbPromise)projectDbPromise=new Promise((resolve,reject)=>{const req=window.indexedDB.open('SG-Mockup-Master-Projects',1);req.onupgradeneeded=()=>req.result.createObjectStore('projects',{keyPath:'id'});req.onsuccess=()=>resolve(req.result);req.onerror=()=>{projectDbPromise=null;reject(req.error)};req.onblocked=()=>reject(Error('Close another SG Mockup tab, then try again.'))});return projectDbPromise}
+async function projectDbAction(mode,action){const db=await projectDatabase();return new Promise((resolve,reject)=>{const tx=db.transaction('projects',mode),req=action(tx.objectStore('projects'));tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||Error('Storage interrupted'))})}
+async function refreshSavedProjects(){try{const rows=await projectDbAction('readonly',s=>s.getAll()),select=document.getElementById('savedProjects');select.replaceChildren();const blank=document.createElement('option');blank.value='';blank.textContent='Choose a saved item';select.appendChild(blank);rows.sort((a,b)=>String(b.savedAt||'').localeCompare(String(a.savedAt||'')));for(const row of rows){const option=document.createElement('option');option.value=row.id;option.textContent=row.name+' · '+(row.kind==='template'?'Template':'Project');select.appendChild(option)}if(savedEntryId)select.value=savedEntryId}catch(err){/* Downloaded project files remain usable without browser storage. */}}
+async function saveWorkspace(kind){if(restoringProject)return;if(kind==='project'&&!art){projectStatus('Upload artwork first, or choose Save Template to keep a layout.');return}try{const p=snapshotProject(kind);validateProject(p);downloadProjectFile(p);const id=savedEntryKind===kind&&savedEntryId&&savedEntryName===p.name?savedEntryId:(globalThis.crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2));try{await projectDbAction('readwrite',s=>s.put({...p,id}));savedEntryId=id;savedEntryKind=kind;savedEntryName=p.name;await refreshSavedProjects();projectStatus((kind==='template'?'Template':'Project')+' saved here and downloaded as a backup.')}catch(err){projectStatus('Backup file downloaded. This browser could not keep a local copy; use Open saved file to reopen it.')}}catch(err){projectStatus('Could not save: '+err.message)}}
+document.getElementById('saveProject').onclick=()=>saveWorkspace('project');document.getElementById('saveTemplate').onclick=()=>saveWorkspace('template');
+document.getElementById('openProject').onclick=()=>document.getElementById('projectFile').click();
+document.getElementById('projectFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>150*1024*1024)throw Error('This file is too large to open.');await restoreProject(JSON.parse(await file.text()))}catch(err){projectStatus('Could not open: '+err.message)}finally{e.target.value=''}};
+document.getElementById('openLocal').onclick=async()=>{const id=document.getElementById('savedProjects').value;if(!id){projectStatus('Choose a saved project or template first.');return}try{const row=await projectDbAction('readonly',s=>s.get(id));if(!row)throw Error('That saved item is no longer available.');await restoreProject(row,id)}catch(err){projectStatus('Could not open: '+err.message)}};
+document.getElementById('deleteLocal').onclick=async()=>{const id=document.getElementById('savedProjects').value;if(!id)return;if(!confirm('Delete this saved browser copy? Your downloaded backup file will remain.'))return;try{await projectDbAction('readwrite',s=>s.delete(id));if(savedEntryId===id){savedEntryId=null;savedEntryKind=null;savedEntryName=null}await refreshSavedProjects();projectStatus('Saved browser copy deleted.')}catch(err){projectStatus('Could not delete: '+err.message)}};
+refreshSavedProjects();
+
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+</body></html>
