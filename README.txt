@@ -1,16 +1,21 @@
-SG MOCKUP MASTER V27 — COMPLETE PACKAGE
+SG MOCKUP MASTER V31
 
-Upload the CONTENTS of this folder to the root of your new GitHub repository.
-index.html, assets/, manifest.webmanifest and sw.js must stay together.
-For a plain static Netlify site: no build command; publish directory is the repository root (.).
-You can also drag this unzipped folder into Netlify manual deploy.
-Do not upload only index.html or upload the ZIP as the website.
+New in V31: Text, labels & signature (sidebar section 3)
+- Presets: SALE, ACT NOW, NEW DROP, LIMITED, Garment name, Signature. Or type your own (up to 80 characters, Enter for a second line).
+- Styles: Badge, Sale sticker, Bold outlined text, Signature script.
+- Text color, badge/outline color, size and tilt.
+- "Add to all garments" puts the label on every card; "Add to one garment" uses the card you last tapped.
+- Drag labels on any card. Tap a label to edit it; edits apply to that label on every garment. Arrow keys nudge, Delete removes it from that card.
+- Type {garment} anywhere to print each card's garment name (T-shirt, Crewneck, Hoodie...).
+- Labels show up in downloads, shares and collages, and save with projects and templates.
+- Fonts are built in, so labels look the same offline.
 
-Includes six garment types; Black, White, Blue, Red, Gray, Green; realistic city and holiday scenes; custom background upload; 3/4/5/6-picture titled collages; saved projects/templates; local saved shelf; .sgmockup backup files; logo placement reuse; individual/all garment downloads.
+Still in from V30
+- See-through backgrounds on every garment, including the long sleeve arm gaps.
+- Six colors per garment: Black, White, Gray, Green, Red, Blue (hoodie also has the Gray back view).
+- All photos built into index.html, so shirts load from the Netlify link or the file itself.
 
-Open the deployed HTTPS site to use the app and install it to the home screen.
-Saved projects stay in the browser and site where they were created. A new site address does not automatically inherit those saves. Use downloaded .sgmockup backups and Open saved file to move them. Templates save layout without artwork; projects save artwork and collage images.
-
-Validation: all packaged asset references checked, source feature checks passed, JavaScript syntax checked. Existing app functionality was previously checked using simulated DOM/canvas tests; this package has not been fully tested in a real phone/desktop browser.
-
-Preview update: all six Black garment previews load automatically after workspace initialization, with one retry on image failure. Other colors load when selected.
+Deploy (GitHub -> Netlify)
+Upload to the repo root: index.html, manifest.webmanifest, sw.js, README.txt, and the assets folder (3 icons).
+Netlify: build command empty, publish directory "."
+After deploying, open the site and refresh once so the new version replaces the cached one.
